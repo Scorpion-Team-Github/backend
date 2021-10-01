@@ -29,6 +29,8 @@ namespace Neighlink.API.Controllers
 
         private IQueryable<Buildings> PrepareQuery() => _context.Buildings
          .Include(x => x.Condominium)
+               .ThenInclude(x => x.Administrator)
+                .ThenInclude(x => x.User)
          .OrderBy(x => x.Id)
          .AsQueryable();
 
@@ -86,7 +88,7 @@ namespace Neighlink.API.Controllers
         [HttpPut]
         [Route("{id}")]
         [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
-        public IActionResult Put(int id, [FromForm] BuildingRequest model)
+        public IActionResult Put(int id, [FromBody] BuildingRequest model)
         {
             try
             {
@@ -124,7 +126,7 @@ namespace Neighlink.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
-        public IActionResult Post([FromForm] BuildingRequest model)
+        public IActionResult Post([FromBody] BuildingRequest model)
         {
             try
             {

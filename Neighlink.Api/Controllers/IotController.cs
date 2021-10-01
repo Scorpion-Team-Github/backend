@@ -15,29 +15,28 @@ using System.Net.Mime;
 namespace Neighlink.API.Controllers
 {
     [ApiController]
-    [Route(ConstantHelper.API_PREFIX + "/departments")]
+    [Route(ConstantHelper.API_PREFIX + "/iot")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    public class DepartmentController : BaseController
+    public class IotController : BaseController
     {
         private NeighlinkContext _context;
 
-        public DepartmentController(NeighlinkContext context)
+        public IotController(NeighlinkContext context)
         {
             this._context = context;
         }
 
-        private IQueryable<Departments> PrepareQuery() => _context.Departments
-         .Include(x => x.DepartmentBills)
-         .Include(x => x.ResidentDepartments)
-         .Include(x => x.Building)
-              .ThenInclude(x => x.Condominium)
+        private IQueryable<Buildings> PrepareQuery() => _context.Buildings
+         .Include(x => x.Condominium)
+               .ThenInclude(x => x.Administrator)
+                .ThenInclude(x => x.User)
          .OrderBy(x => x.Id)
          .AsQueryable();
 
         [HttpGet]
-        [ProducesResponseType(typeof(DefaultResponse<CollectionResponse<DepartmentResponse>>), StatusCodes.Status200OK)]
-        public IActionResult GetAll([FromQuery] DepartmentGetRequest model)
+        [ProducesResponseType(typeof(DefaultResponse<CollectionResponse<BuildingResponse>>), StatusCodes.Status200OK)]
+        public IActionResult GetAll([FromQuery] BuildingGetRequest model)
         {
             try
             {
@@ -52,7 +51,7 @@ namespace Neighlink.API.Controllers
                     query = query.Where(x => x.Name.Contains(model.Name));
 
                 var dtos = ServiceHelper.PaginarColeccion(HttpContext.Request, model.Page, model.Limit, query,
-                  pagedEntities => DepartmentResponse.Builder.From(pagedEntities).BuildAll());
+                  pagedEntities => BuildingResponse.Builder.From(pagedEntities).BuildAll());
 
                 return OkResult("", dtos);
             }
@@ -64,7 +63,7 @@ namespace Neighlink.API.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(typeof(DefaultResponse<DepartmentResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             try
@@ -77,7 +76,7 @@ namespace Neighlink.API.Controllers
                 var query = PrepareQuery().SingleOrDefault(x => x.Id == id);
                 if (query is null)
                     return NotFoundResult("Producto no encontrado.");
-                var dto = DepartmentResponse.Builder.From(query).Build();
+                var dto = BuildingResponse.Builder.From(query).Build();
                 return OkResult("", dto);
             }
             catch (Exception e)
@@ -88,8 +87,8 @@ namespace Neighlink.API.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        [ProducesResponseType(typeof(DefaultResponse<DepartmentResponse>), StatusCodes.Status200OK)]
-        public IActionResult Put(int id, [FromBody] DepartmentRequest model)
+        [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
+        public IActionResult Put(int id, [FromForm] BuildingRequest model)
         {
             try
             {
@@ -99,23 +98,23 @@ namespace Neighlink.API.Controllers
                 if (admin is null)
                     return UnauthorizedResult("unathorized");
 
-                var department = PrepareQuery().SingleOrDefault(x => x.Id == id);
-                if (department is null)
-                    return NotFoundResult("departamento no encontrado");
+                var building = PrepareQuery().SingleOrDefault(x => x.Id == id);
+                if (building is null)
+                    return NotFoundResult("edificio no encontrado");
 
                 transaction = _context.Database.BeginTransaction();
 
-                department.Name = model.Name;
-                department.BuildingId = model.BuildingId;
-                department.SecretCode = model.SecretCode;
-                department.Status = model.Status;
-                department.UpdatedOn = DateTime.Now;
+                building.Name = model.Name;
+                building.CondominiumId = model.CondominiumId;
+                building.NumberOfHomes = model.NumHomes;
+                building.UpdatedOn = DateTime.Now;
+                building.Status = model.Status;
                 _context.SaveChanges();
 
                 transaction.Commit();
 
                 var query = PrepareQuery().SingleOrDefault(x => x.Id == id);
-                var dto = DepartmentResponse.Builder.From(query).Build();
+                var dto = BuildingResponse.Builder.From(query).Build();
                 return OkResult("", dto);
             }
             catch (Exception e)
@@ -126,8 +125,8 @@ namespace Neighlink.API.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(DefaultResponse<DepartmentResponse>), StatusCodes.Status200OK)]
-        public IActionResult Post([FromBody] DepartmentRequest model)
+        [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
+        public IActionResult Post([FromForm] BuildingRequest model)
         {
             try
             {
@@ -141,22 +140,22 @@ namespace Neighlink.API.Controllers
                 transaction = _context.Database.BeginTransaction();
 
 
-                var deparment = new Departments
+                var building = new Buildings
                 {
                     Name = model.Name.Trim(),
-                    BuildingId = model.BuildingId,
-                    SecretCode = model.SecretCode,
+                    CondominiumId = model.CondominiumId,
+                    NumberOfHomes = model.NumHomes,
                     Status = model.Status,
                     CreatedOn = DateTime.Now,
                 };
 
-                _context.Departments.Add(deparment);
+                _context.Buildings.Add(building);
                 _context.SaveChanges();
 
                 transaction.Commit();
 
-                var query = PrepareQuery().SingleOrDefault(x => x.Id == deparment.Id);
-                var dto = DepartmentResponse.Builder.From(query).Build();
+                var query = PrepareQuery().SingleOrDefault(x => x.Id == building.Id);
+                var dto = BuildingResponse.Builder.From(query).Build();
                 return OkResult("", dto);
             }
             catch (Exception e)

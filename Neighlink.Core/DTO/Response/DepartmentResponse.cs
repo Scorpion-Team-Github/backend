@@ -54,7 +54,8 @@ namespace Neighlink.Core.DTO.Response
                 dto.Name = entity.Name;
                 dto.SecretCode = entity.SecretCode;
                 dto.CreationDate = entity.CreatedOn?.ToString("dd/MM/yyyy HH:mm") ?? "";
-                dto.Building = BuildingResponse.Builder.From(entity.Building).Build();
+                if (entity.Building != null)
+                    dto.Building = BuildingResponse.Builder.From(entity.Building).Build();
                 return new Builder(dto);
             }
 

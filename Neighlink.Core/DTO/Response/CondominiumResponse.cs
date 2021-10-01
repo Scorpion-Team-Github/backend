@@ -58,7 +58,8 @@ namespace Neighlink.Core.DTO.Response
                 dto.Name = entity.Name;
                 dto.Address = entity.Address;
                 dto.Description = entity.Description;
-                dto.Admin = UserResponse.Builder.From(entity.Administrator.User).Build();
+                if (entity.Administrator != null)
+                    dto.Admin = UserResponse.Builder.From(entity.Administrator.User).Build();
                 dto.CreationDate = entity.CreatedOn?.ToString("dd/MM/yyyy HH:mm") ?? "";
                 dto.Status = entity.Status;
                 return new Builder(dto);

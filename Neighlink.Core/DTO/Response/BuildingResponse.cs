@@ -57,7 +57,8 @@ namespace Neighlink.Core.DTO.Response
                 dto.NumHomes = entity.NumberOfHomes;
                 dto.Status = entity.Status;
                 dto.CreationDate = entity.CreatedOn?.ToString("dd/MM/yyyy HH:mm") ?? "";
-                dto.Condominium = CondominiumResponse.Builder.From(entity.Condominium).Build();
+                if (entity.Condominium != null)
+                    dto.Condominium = CondominiumResponse.Builder.From(entity.Condominium).Build();
                 return new Builder(dto);
             }
 
