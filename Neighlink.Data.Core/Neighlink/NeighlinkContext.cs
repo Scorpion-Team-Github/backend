@@ -45,9 +45,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.Password).IsRequired();
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -57,13 +55,13 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.Username)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Administrators)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Administr__UserI__3F115E1A");
+                    .HasConstraintName("FK__Administr__UserI__7FEAFD3E");
             });
 
             modelBuilder.Entity<Buildings>(entity =>
@@ -74,7 +72,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -86,7 +84,7 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.Buildings)
                     .HasForeignKey(d => d.CondominiumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Buildings__Condo__531856C7");
+                    .HasConstraintName("FK__Buildings__Condo__13F1F5EB");
             });
 
             modelBuilder.Entity<CondominiumNews>(entity =>
@@ -95,15 +93,13 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasMaxLength(1);
-
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
@@ -111,7 +107,7 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.CondominiumNews)
                     .HasForeignKey(d => d.CondominiumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Condomini__Condo__4F47C5E3");
+                    .HasConstraintName("FK__Condomini__Condo__10216507");
             });
 
             modelBuilder.Entity<CondominiumPolls>(entity =>
@@ -120,9 +116,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.Description).IsRequired();
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
@@ -134,7 +128,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.Title)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
@@ -142,13 +136,13 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.CondominiumPolls)
                     .HasForeignKey(d => d.AdministratorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Condomini__Admin__6CD828CA");
+                    .HasConstraintName("FK__Condomini__Admin__2DB1C7EE");
 
                 entity.HasOne(d => d.Condominium)
                     .WithMany(p => p.CondominiumPolls)
                     .HasForeignKey(d => d.CondominiumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Condomini__Condo__6BE40491");
+                    .HasConstraintName("FK__Condomini__Condo__2CBDA3B5");
             });
 
             modelBuilder.Entity<CondominiumRules>(entity =>
@@ -157,11 +151,9 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasMaxLength(1);
-
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -173,22 +165,18 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.CondominiumRules)
                     .HasForeignKey(d => d.CondominiumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Condomini__Condo__4B7734FF");
+                    .HasConstraintName("FK__Condomini__Condo__0C50D423");
             });
 
             modelBuilder.Entity<Condominiums>(entity =>
             {
-                entity.Property(e => e.Address).HasMaxLength(1);
-
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasMaxLength(1);
-
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -200,7 +188,7 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.Condominiums)
                     .HasForeignKey(d => d.AdministratorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Condomini__Admin__47A6A41B");
+                    .HasConstraintName("FK__Condomini__Admin__0880433F");
             });
 
             modelBuilder.Entity<DepartmentBills>(entity =>
@@ -209,13 +197,11 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasMaxLength(1);
-
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
@@ -229,13 +215,13 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.DepartmentBills)
                     .HasForeignKey(d => d.DepartmentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Departmen__Depar__625A9A57");
+                    .HasConstraintName("FK__Departmen__Depar__2334397B");
 
                 entity.HasOne(d => d.PaymentCategory)
                     .WithMany(p => p.DepartmentBills)
                     .HasForeignKey(d => d.PaymentCategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Departmen__Payme__634EBE90");
+                    .HasConstraintName("FK__Departmen__Payme__24285DB4");
             });
 
             modelBuilder.Entity<Departments>(entity =>
@@ -246,7 +232,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.SecretCode).HasMaxLength(1);
 
@@ -260,7 +246,7 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.Departments)
                     .HasForeignKey(d => d.BuildingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Departmen__Build__56E8E7AB");
+                    .HasConstraintName("FK__Departmen__Build__17C286CF");
             });
 
             modelBuilder.Entity<PaymentBills>(entity =>
@@ -271,9 +257,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.PaymentDate).HasColumnType("datetime");
 
-                entity.Property(e => e.PaymentImage)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.PaymentImage).IsRequired();
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -285,13 +269,13 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.PaymentBills)
                     .HasForeignKey(d => d.DepartmentBillId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PaymentBi__Depar__681373AD");
+                    .HasConstraintName("FK__PaymentBi__Depar__28ED12D1");
 
                 entity.HasOne(d => d.Resident)
                     .WithMany(p => p.PaymentBills)
                     .HasForeignKey(d => d.ResidentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PaymentBi__Resid__671F4F74");
+                    .HasConstraintName("FK__PaymentBi__Resid__27F8EE98");
             });
 
             modelBuilder.Entity<PaymentCategories>(entity =>
@@ -300,11 +284,9 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasMaxLength(1);
-
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -335,7 +317,7 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.PlanMembers)
                     .HasForeignKey(d => d.AdministratorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PlanMembe__Admin__43D61337");
+                    .HasConstraintName("FK__PlanMembe__Admin__04AFB25B");
             });
 
             modelBuilder.Entity<PollOptions>(entity =>
@@ -344,13 +326,11 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.Description).IsRequired();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -362,14 +342,12 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.PollOptions)
                     .HasForeignKey(d => d.CondominiumPollId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PollOptio__Condo__70A8B9AE");
+                    .HasConstraintName("FK__PollOptio__Condo__318258D2");
             });
 
             modelBuilder.Entity<PollOptionsByResidents>(entity =>
             {
-                entity.Property(e => e.Comment)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.Comment).IsRequired();
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
@@ -385,13 +363,13 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.PollOptionsByResidents)
                     .HasForeignKey(d => d.PollOptionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PollOptio__PollO__74794A92");
+                    .HasConstraintName("FK__PollOptio__PollO__3552E9B6");
 
                 entity.HasOne(d => d.Resident)
                     .WithMany(p => p.PollOptionsByResidents)
                     .HasForeignKey(d => d.ResidentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PollOptio__Resid__756D6ECB");
+                    .HasConstraintName("FK__PollOptio__Resid__36470DEF");
             });
 
             modelBuilder.Entity<ResidentDepartments>(entity =>
@@ -410,13 +388,13 @@ namespace Neighlink.Data.Core.Neighlink
                     .WithMany(p => p.ResidentDepartments)
                     .HasForeignKey(d => d.DepartmentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ResidentD__Depar__5BAD9CC8");
+                    .HasConstraintName("FK__ResidentD__Depar__1C873BEC");
 
                 entity.HasOne(d => d.Resident)
                     .WithMany(p => p.ResidentDepartments)
                     .HasForeignKey(d => d.ResidentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ResidentD__Resid__5AB9788F");
+                    .HasConstraintName("FK__ResidentD__Resid__1B9317B3");
             });
 
             modelBuilder.Entity<Residents>(entity =>
@@ -425,9 +403,7 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(1);
+                entity.Property(e => e.Password).IsRequired();
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -437,13 +413,13 @@ namespace Neighlink.Data.Core.Neighlink
 
                 entity.Property(e => e.Username)
                     .IsRequired()
-                    .HasMaxLength(1);
+                    .HasMaxLength(100);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Residents)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Residents__UserI__3B40CD36");
+                    .HasConstraintName("FK__Residents__UserI__7C1A6C5A");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -453,6 +429,16 @@ namespace Neighlink.Data.Core.Neighlink
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.Email).HasMaxLength(100);
+
+                entity.Property(e => e.Gender).HasMaxLength(30);
+
+                entity.Property(e => e.LastName).HasMaxLength(100);
+
+                entity.Property(e => e.Name).HasMaxLength(100);
+
+                entity.Property(e => e.PhoneNumber).HasMaxLength(11);
 
                 entity.Property(e => e.Status)
                     .IsRequired()

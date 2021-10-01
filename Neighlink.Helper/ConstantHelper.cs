@@ -17,6 +17,11 @@ namespace Neighlink.Helper
 
         public const string PRODUCT_STATUS_ACTIVATE = "ACT";
 
+        public static class Role {
+            public const string ADMIN = "ADM";
+            public const string RESIDENT = "RES";
+        }
+
         public static string ToSafeString(this object obj, string defStr = "") => obj?.ToString() ?? defStr;
     }
 }

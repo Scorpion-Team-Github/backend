@@ -10,4 +10,9 @@
     <PackageReference Include="X.PagedList" Version="8.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Neighlink.Data.Core\Neighlink.Data.Core.csproj" />
+    <ProjectReference Include="..\Neighlink.Helper\Neighlink.Helper.csproj" />
+  </ItemGroup>
+
 </Project>
