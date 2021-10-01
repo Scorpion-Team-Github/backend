@@ -64,7 +64,7 @@ namespace Neighlink.API.Controllers
                 //    storeContext.SaveChanges();
                 //}
 
-                var dto = UserResponse.Builder.From(user.User).Build();
+                var dto = UserResponse.Builder.From(user?.User ?? admin?.User).Build();
                 dto.Token = TokenHelper.GenerateJwtToken(dto.Id.ToString());
                 dto.Role = admin is null ? ConstantHelper.Role.RESIDENT : ConstantHelper.Role.ADMIN;
                 return OkResult("Success", dto);
