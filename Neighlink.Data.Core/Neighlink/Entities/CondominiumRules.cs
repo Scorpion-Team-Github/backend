@@ -5,23 +5,17 @@ using System.Collections.Generic;
 
 namespace Neighlink.Data.Core.Neighlink.Entities
 {
-    public partial class Buildings
+    public partial class CondominiumRules
     {
-        public Buildings()
-        {
-            Departments = new HashSet<Departments>();
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public int CondominiumId { get; set; }
-        public int NumberOfHomes { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? DeletedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public bool? Status { get; set; }
 
         public virtual Condominiums Condominium { get; set; }
-        public virtual ICollection<Departments> Departments { get; set; }
     }
 }

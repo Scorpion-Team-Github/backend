@@ -9,31 +9,27 @@ namespace Neighlink.Data.Core.Neighlink.Entities
     {
         public Condominiums()
         {
-            Bills = new HashSet<Bills>();
             Buildings = new HashSet<Buildings>();
-            News = new HashSet<News>();
-            PaymentCategories = new HashSet<PaymentCategories>();
-            Polls = new HashSet<Polls>();
-            Users = new HashSet<Users>();
+            CondominiumNews = new HashSet<CondominiumNews>();
+            CondominiumPolls = new HashSet<CondominiumPolls>();
+            CondominiumRules = new HashSet<CondominiumRules>();
         }
 
         public int Id { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
-        public bool Status { get; set; }
-        public DateTime? UpdatedAt { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public string Address { get; set; }
-        public string PhotoUrl { get; set; }
-        public string SecretCode { get; set; }
-        public int? PlanId { get; set; }
+        public int AdministratorId { get; set; }
+        public int NumberOfHomes { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? DeletedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool? Status { get; set; }
 
-        public virtual Plans Plan { get; set; }
-        public virtual ICollection<Bills> Bills { get; set; }
+        public virtual Administrators Administrator { get; set; }
         public virtual ICollection<Buildings> Buildings { get; set; }
-        public virtual ICollection<News> News { get; set; }
-        public virtual ICollection<PaymentCategories> PaymentCategories { get; set; }
-        public virtual ICollection<Polls> Polls { get; set; }
-        public virtual ICollection<Users> Users { get; set; }
+        public virtual ICollection<CondominiumNews> CondominiumNews { get; set; }
+        public virtual ICollection<CondominiumPolls> CondominiumPolls { get; set; }
+        public virtual ICollection<CondominiumRules> CondominiumRules { get; set; }
     }
 }
