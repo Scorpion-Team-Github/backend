@@ -15,28 +15,26 @@ using System.Net.Mime;
 namespace Neighlink.API.Controllers
 {
     [ApiController]
-    [Route(ConstantHelper.API_PREFIX + "/iot")]
+    [Route(ConstantHelper.API_PREFIX + "/iot-doors")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    public class IotController : BaseController
+    public class IotDoorController : BaseController
     {
         private NeighlinkContext _context;
 
-        public IotController(NeighlinkContext context)
+        public IotDoorController(NeighlinkContext context)
         {
             this._context = context;
         }
 
-        private IQueryable<Buildings> PrepareQuery() => _context.Buildings
-         .Include(x => x.Condominium)
-               .ThenInclude(x => x.Administrator)
-                .ThenInclude(x => x.User)
+        private IQueryable<DepartmentDoors> PrepareQuery() => _context.DepartmentDoors
+         .Include(x => x.Department)
          .OrderBy(x => x.Id)
          .AsQueryable();
 
         [HttpGet]
-        [ProducesResponseType(typeof(DefaultResponse<CollectionResponse<BuildingResponse>>), StatusCodes.Status200OK)]
-        public IActionResult GetAll([FromQuery] BuildingGetRequest model)
+        [ProducesResponseType(typeof(DefaultResponse<CollectionResponse<DoorResponse>>), StatusCodes.Status200OK)]
+        public IActionResult GetAll([FromQuery] DoorGetRequest model)
         {
             try
             {
@@ -51,7 +49,7 @@ namespace Neighlink.API.Controllers
                     query = query.Where(x => x.Name.Contains(model.Name));
 
                 var dtos = ServiceHelper.PaginarColeccion(HttpContext.Request, model.Page, model.Limit, query,
-                  pagedEntities => BuildingResponse.Builder.From(pagedEntities).BuildAll());
+                  pagedEntities => DoorResponse.Builder.From(pagedEntities).BuildAll());
 
                 return OkResult("", dtos);
             }
@@ -63,7 +61,7 @@ namespace Neighlink.API.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DefaultResponse<DoorResponse>), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
             try
@@ -76,7 +74,7 @@ namespace Neighlink.API.Controllers
                 var query = PrepareQuery().SingleOrDefault(x => x.Id == id);
                 if (query is null)
                     return NotFoundResult("Producto no encontrado.");
-                var dto = BuildingResponse.Builder.From(query).Build();
+                var dto = DoorResponse.Builder.From(query).Build();
                 return OkResult("", dto);
             }
             catch (Exception e)
@@ -87,8 +85,8 @@ namespace Neighlink.API.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
-        public IActionResult Put(int id, [FromForm] BuildingRequest model)
+        [ProducesResponseType(typeof(DefaultResponse<DoorResponse>), StatusCodes.Status200OK)]
+        public IActionResult Put(int id, [FromBody] DoorRequest model)
         {
             try
             {
@@ -98,23 +96,23 @@ namespace Neighlink.API.Controllers
                 if (admin is null)
                     return UnauthorizedResult("unathorized");
 
-                var building = PrepareQuery().SingleOrDefault(x => x.Id == id);
-                if (building is null)
-                    return NotFoundResult("edificio no encontrado");
+                var door = PrepareQuery().SingleOrDefault(x => x.Id == id);
+                if (door is null)
+                    return NotFoundResult("puerta no encontrado");
 
                 transaction = _context.Database.BeginTransaction();
 
-                building.Name = model.Name;
-                building.CondominiumId = model.CondominiumId;
-                building.NumberOfHomes = model.NumHomes;
-                building.UpdatedOn = DateTime.Now;
-                building.Status = model.Status;
+                door.Name = model.Name;
+                door.DepartmentId = model.DepartmentId;
+                door.SecretCode = model.SecretCode;
+                door.UpdatedOn = DateTime.Now;
+                door.Status = model.Status;
                 _context.SaveChanges();
 
                 transaction.Commit();
 
                 var query = PrepareQuery().SingleOrDefault(x => x.Id == id);
-                var dto = BuildingResponse.Builder.From(query).Build();
+                var dto = DoorResponse.Builder.From(query).Build();
                 return OkResult("", dto);
             }
             catch (Exception e)
@@ -125,8 +123,8 @@ namespace Neighlink.API.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(DefaultResponse<BuildingResponse>), StatusCodes.Status200OK)]
-        public IActionResult Post([FromForm] BuildingRequest model)
+        [ProducesResponseType(typeof(DefaultResponse<DoorResponse>), StatusCodes.Status200OK)]
+        public IActionResult Post([FromBody] DoorRequest model)
         {
             try
             {
@@ -140,22 +138,22 @@ namespace Neighlink.API.Controllers
                 transaction = _context.Database.BeginTransaction();
 
 
-                var building = new Buildings
+                var door = new DepartmentDoors
                 {
                     Name = model.Name.Trim(),
-                    CondominiumId = model.CondominiumId,
-                    NumberOfHomes = model.NumHomes,
+                    DepartmentId = model.DepartmentId,
+                    SecretCode = model.SecretCode,
                     Status = model.Status,
                     CreatedOn = DateTime.Now,
                 };
 
-                _context.Buildings.Add(building);
+                _context.DepartmentDoors.Add(door);
                 _context.SaveChanges();
 
                 transaction.Commit();
 
-                var query = PrepareQuery().SingleOrDefault(x => x.Id == building.Id);
-                var dto = BuildingResponse.Builder.From(query).Build();
+                var query = PrepareQuery().SingleOrDefault(x => x.Id == door.Id);
+                var dto = DoorResponse.Builder.From(query).Build();
                 return OkResult("", dto);
             }
             catch (Exception e)

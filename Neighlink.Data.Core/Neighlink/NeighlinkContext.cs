@@ -25,6 +25,7 @@ namespace Neighlink.Data.Core.Neighlink
         public virtual DbSet<CondominiumRules> CondominiumRules { get; set; }
         public virtual DbSet<Condominiums> Condominiums { get; set; }
         public virtual DbSet<DepartmentBills> DepartmentBills { get; set; }
+        public virtual DbSet<DepartmentDoors> DepartmentDoors { get; set; }
         public virtual DbSet<Departments> Departments { get; set; }
         public virtual DbSet<PaymentBills> PaymentBills { get; set; }
         public virtual DbSet<PaymentCategories> PaymentCategories { get; set; }
@@ -41,6 +42,9 @@ namespace Neighlink.Data.Core.Neighlink
 
             modelBuilder.Entity<Administrators>(entity =>
             {
+                entity.HasIndex(e => e.Username, "UQ_administrator_username")
+                    .IsUnique();
+
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");
@@ -224,6 +228,33 @@ namespace Neighlink.Data.Core.Neighlink
                     .HasConstraintName("FK__Departmen__Payme__24285DB4");
             });
 
+            modelBuilder.Entity<DepartmentDoors>(entity =>
+            {
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.SecretCode)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Department)
+                    .WithMany(p => p.DepartmentDoors)
+                    .HasForeignKey(d => d.DepartmentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Departmen__Depar__3CF40B7E");
+            });
+
             modelBuilder.Entity<Departments>(entity =>
             {
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -234,7 +265,7 @@ namespace Neighlink.Data.Core.Neighlink
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(e => e.SecretCode).HasMaxLength(1);
+                entity.Property(e => e.SecretCode).HasMaxLength(50);
 
                 entity.Property(e => e.Status)
                     .IsRequired()
@@ -399,6 +430,9 @@ namespace Neighlink.Data.Core.Neighlink
 
             modelBuilder.Entity<Residents>(entity =>
             {
+                entity.HasIndex(e => e.Username, "UQ_resident_username")
+                    .IsUnique();
+
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedOn).HasColumnType("datetime");

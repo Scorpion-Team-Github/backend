@@ -10,6 +10,7 @@ namespace Neighlink.Data.Core.Neighlink.Entities
         public Departments()
         {
             DepartmentBills = new HashSet<DepartmentBills>();
+            DepartmentDoors = new HashSet<DepartmentDoors>();
             ResidentDepartments = new HashSet<ResidentDepartments>();
         }
 
@@ -24,6 +25,7 @@ namespace Neighlink.Data.Core.Neighlink.Entities
 
         public virtual Buildings Building { get; set; }
         public virtual ICollection<DepartmentBills> DepartmentBills { get; set; }
+        public virtual ICollection<DepartmentDoors> DepartmentDoors { get; set; }
         public virtual ICollection<ResidentDepartments> ResidentDepartments { get; set; }
     }
 }
