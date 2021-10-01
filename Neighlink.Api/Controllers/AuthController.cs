@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Neighlink.Core.DTO.Request;
 using Neighlink.Core.DTO.Response;
 using Neighlink.Data.Core.Neighlink;
 using Neighlink.Data.Core.Neighlink.Entities;
 using Neighlink.Helper;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mime;
-using System.Threading.Tasks;
 
 namespace Neighlink.API.Controllers
 {
@@ -38,10 +37,10 @@ namespace Neighlink.API.Controllers
         {
             try
             {
-                var user = _context.Residents
+                var user = _context.Residents.Include(x => x.User)
                     .SingleOrDefault(x => x.Username == model.User);
 
-                var admin = _context.Administrators
+                var admin = _context.Administrators.Include(x => x.User)
                    .SingleOrDefault(x => x.Username == model.User);
 
                 if (user is null && admin is null)

@@ -21,6 +21,8 @@ namespace Neighlink.Core.DTO.Response
         public bool? Status { get; set; }
         [JsonPropertyName("creation_date")]
         public string CreationDate { get; set; }
+        [JsonPropertyName("condominium")]
+        public CondominiumResponse Condominium { get; set; }
 
 
         public class Builder
@@ -55,6 +57,7 @@ namespace Neighlink.Core.DTO.Response
                 dto.NumHomes = entity.NumberOfHomes;
                 dto.Status = entity.Status;
                 dto.CreationDate = entity.CreatedOn?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                dto.Condominium = CondominiumResponse.Builder.From(entity.Condominium).Build();
                 return new Builder(dto);
             }
 

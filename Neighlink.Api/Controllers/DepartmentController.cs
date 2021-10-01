@@ -9,10 +9,8 @@ using Neighlink.Data.Core.Neighlink;
 using Neighlink.Data.Core.Neighlink.Entities;
 using Neighlink.Helper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
-using System.Threading.Tasks;
 
 namespace Neighlink.API.Controllers
 {
@@ -97,8 +95,8 @@ namespace Neighlink.API.Controllers
             {
                 var transaction = default(IDbContextTransaction);
                 var userId = GetId(Request);
-                var user = _context.Users.SingleOrDefault(x => x.Id == userId);
-                if (user is null)
+                var admin = _context.Administrators.SingleOrDefault(x => x.UserId == userId);
+                if (admin is null)
                     return UnauthorizedResult("unathorized");
 
                 var department = PrepareQuery().SingleOrDefault(x => x.Id == id);
@@ -111,6 +109,7 @@ namespace Neighlink.API.Controllers
                 department.BuildingId = model.BuildingId;
                 department.SecretCode = model.SecretCode;
                 department.Status = model.Status;
+                department.UpdatedOn = DateTime.Now;
                 _context.SaveChanges();
 
                 transaction.Commit();
@@ -135,8 +134,8 @@ namespace Neighlink.API.Controllers
                 var transaction = default(IDbContextTransaction);
 
                 var userId = GetId(Request);
-                var user = _context.Users.SingleOrDefault(x => x.Id == userId);
-                if (user is null)
+                var admin = _context.Administrators.SingleOrDefault(x => x.UserId == userId);
+                if (admin is null)
                     return UnauthorizedResult("unathorized");
 
                 transaction = _context.Database.BeginTransaction();
