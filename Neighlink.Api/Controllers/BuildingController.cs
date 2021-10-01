@@ -17,14 +17,14 @@ using System.Threading.Tasks;
 namespace Neighlink.API.Controllers
 {
     [ApiController]
-    [Route(ConstantHelper.API_PREFIX + "/departments")]
+    [Route(ConstantHelper.API_PREFIX + "/buildings")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
-    public class DepartmentController : BaseController
+    public class BuildingController : BaseController
     {
         private NeighlinkContext _context;
 
-        public DepartmentController(NeighlinkContext context)
+        public BuildingController(NeighlinkContext context)
         {
             this._context = context;
         }
@@ -128,7 +128,7 @@ namespace Neighlink.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(DefaultResponse<DepartmentResponse>), StatusCodes.Status200OK)]
-        public IActionResult Post([FromForm] DepartmentRequest model)
+        public async Task<IActionResult> Post([FromForm] DepartmentRequest model)
         {
             try
             {

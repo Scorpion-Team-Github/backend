@@ -21,6 +21,12 @@ namespace Neighlink.Core.DTO.Request
         [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
+        [JsonPropertyName("gender")]
+        public string Gender { get; set; }
+
+        [JsonPropertyName("birth_date")]
+        public string BirthDate { get; set; }
+
         [JsonPropertyName("email")]
         public string Email { get; set; }
 

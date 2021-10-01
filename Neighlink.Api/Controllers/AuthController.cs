@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Neighlink.Core.DTO.Request;
 using Neighlink.Core.DTO.Response;
 using Neighlink.Data.Core.Neighlink;
+using Neighlink.Data.Core.Neighlink.Entities;
 using Neighlink.Helper;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -22,11 +24,11 @@ namespace Neighlink.API.Controllers
     //[ProducesResponseType( typeof( DefaultResponse<object> ), StatusCodes.Status500InternalServerError )]
     public class AuthController : BaseController
     {
-        private NeighlinkContext storeContext;
+        private NeighlinkContext _context;
 
-        public AuthController(NeighlinkContext goingToContext)
+        public AuthController(NeighlinkContext context)
         {
-            this.storeContext = goingToContext;
+            this._context = context;
         }
 
         [HttpPost]
@@ -36,10 +38,10 @@ namespace Neighlink.API.Controllers
         {
             try
             {
-                var user = storeContext.Residents
+                var user = _context.Residents
                     .SingleOrDefault(x => x.Username == model.User);
 
-                var admin = storeContext.Administrators
+                var admin = _context.Administrators
                    .SingleOrDefault(x => x.Username == model.User);
 
                 if (user is null && admin is null)
@@ -81,43 +83,44 @@ namespace Neighlink.API.Controllers
         {
             try
             {
-                var user = storeContext.Users
+                var user = _context.Users
                     .SingleOrDefault(x => x.Email == model.Email);
                 if (user != null)
                     return UnauthorizedResult("El correo ya se encuentra registrado en el sistema.");
 
-                user = storeContext.Users
+                user = _context.Users
                     .SingleOrDefault(x => x.PhoneNumber == model.Phone);
                 if (user != null)
                     return UnauthorizedResult("El telefono ya se encuentra registrado en el sistema.");
 
-                var admin = storeContext.Administrators
-                   .SingleOrDefault(x => x.Username == model.User);
-
-                if (user is null && admin is null)
-                    return UnauthorizedResult("usuario y/o contraseña invalido.");
-
-                var encryptPass = SecurityHelper.EncryptText(model.Password);
-                if (admin is null)
+                var newUser = new Users
                 {
-                    if (user.Password != encryptPass)
-                        return UnauthorizedResult("usuario o contraseña invalido.");
-                }
-                else
+                    Name = model.Name,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Gender = model.Gender,
+                    PhoneNumber = model.Phone,
+                    Birthdate = DateTime.ParseExact(model.BirthDate, "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                    Status = true
+                };
+
+                _context.Users.Add(newUser);
+                _context.SaveChanges();
+
+                var admin = new Administrators
                 {
-                    if (admin.Password != encryptPass)
-                        return UnauthorizedResult("usuario o contraseña invalido.");
-                }
+                    UserId = newUser.Id,
+                    Username = model.User,
+                    Password = SecurityHelper.EncryptText(model.Password),
+                    CreatedOn = DateTime.Now,
+                    Status = true
+                };
 
-                //if (!string.IsNullOrEmpty(model.FCMToken))
-                //{
-                //    user.Fcmtoken = model.FCMToken;
-                //    storeContext.SaveChanges();
-                //}
+                _context.Administrators.Add(admin);
+                _context.SaveChanges();
 
-                var dto = UserResponse.Builder.From(user.User).Build();
-                dto.Token = TokenHelper.GenerateJwtToken(dto.Id.ToString());
-                dto.Role = admin is null ? ConstantHelper.Role.RESIDENT : ConstantHelper.Role.ADMIN;
+                var dto = UserResponse.Builder.From(newUser).Build();
+                dto.Role = ConstantHelper.Role.ADMIN;
                 return OkResult("Success", dto);
             }
             catch (Exception e)
