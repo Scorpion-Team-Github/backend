@@ -28,6 +28,7 @@ namespace Neighlink.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddControllers();
             services.AddDbContext<NeighlinkContext>(
                 options => options.UseSqlServer("server=SQL5052.site4now.net;database=db_a7a774_bowep7;uid=db_a7a774_bowep7_admin;pwd=temporal1"));
@@ -60,6 +61,12 @@ namespace Neighlink.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options => {
+                options.WithOrigins("http://localhost:3000");
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            })
+
             if (env.IsDevelopment() || env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
